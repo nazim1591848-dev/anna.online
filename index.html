@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Verification</title>
+    <style>
+        body { 
+            background-color: #000; 
+            color: #fff; 
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        h1 { font-size: 28px; font-weight: 600; margin-bottom: 5px; }
+        p { font-size: 16px; color: #aaa; margin-bottom: 30px; }
+        button { 
+            background-color: #ff007f; /* Magenta */
+            color: white; 
+            padding: 15px 40px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: 700;
+            cursor: pointer; 
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #cc0066; /* Darker Magenta on hover */
+        }
+
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #1a1a1a;
+            margin: 5% auto;
+            padding: 40px;
+            border: 1px solid #333;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .modal-content label {
+            display: block;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .modal-content input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 20px 0;
+            display: inline-block;
+            border: 1px solid #555;
+            box-sizing: border-box;
+            background-color: #333;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .modal-content button {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .modal-content .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .modal-content .close:hover,
+        .modal-content .close:focus {
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #error-message {
+            color: #ff3333;
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="verification-prompt">
+        <h1>Verify Your Age</h1>
+        <p>You must be 18 years or older to access this content.</p>
+        <button onclick="openModal()">Enter Site</button>
+    </div>
+
+    <div id="ageVerificationModal" class="modal">
+
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Confirm Your Birthday</h2>
+        <p style="color: #aaa; margin-bottom: 20px;">Please enter your date of birth to proceed.</p>
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob">
+        
+        <button onclick="checkAge()">Submit</button>
+        <div id="error-message"></div>
+      </div>
+
+    </div>
+
+    <script>
+        const requiredAge = 18;
+        const modal = document.getElementById('ageVerificationModal');
+        const errorMessage = document.getElementById('error-message');
+
+        function openModal() {
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            errorMessage.textContent = '';
+        }
+
+        function checkAge() {
+            const dobInput = document.getElementById('dob').value;
+            errorMessage.textContent = '';
+
+            if (!dobInput) {
+                errorMessage.textContent = 'Please select your date of birth.';
+                return;
+            }
+
+            const birthDate = new Date(dobInput);
+            const today = new Date();
+
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            const d = today.getDate() - birthDate.getDate();
+
+            if (m < 0 || (m === 0 && d < 0)) {
+                age--;
+            }
+
+            if (age >= requiredAge) {
+                // *** सफल होने पर यह लाइन यूज़र को content.html पर रीडायरेक्ट कर देगी! ***
+                window.location.href = 'content.html';
+            } else {
+                errorMessage.textContent = 'You must be at least ' + requiredAge + ' years old to access this site.';
+            }
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+
+</body>
+</html>
